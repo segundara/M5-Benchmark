@@ -30,29 +30,80 @@ router.get("/", (req,res)=>{
 })
 
 
-router.post("/", (req, res, next) => {
-    try {
-      const reviewsDB = readFile("reviews.json")
-      const newReview = {
-        ...req.body,
-        _id: uniqid(),
-        createdAt: new Date(),
+router.post(
+    "/",
+    [
+      check("comment")
+        .isLength({ min: 4 })
+        .withMessage("No no no no no")
+        .exists()
+        .withMessage("Write your comment please!"),
+
+        check("rate")
+            .isInt({ max: 5 })
+            .withMessage("Rate cannot be more than 5 please!")
+            .exists()
+            .withMessage("Give your rating please!"),
+          
+      check("elementId")
+      .exists()
+      .withMessage("Insert product ID please!"),
+    ],
+    (req, res, next) => {
+      try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+          let err = new Error()
+          err.message = errors
+          err.httpStatusCode = 444
+          next(err) 
+        }
+        else{
+          const reviewsDB = readFile("reviews.json")
+          const newReview = {
+            _id: uniqid(),
+            ...req.body,
+            createdAt: new Date(),
+          }
+  
+          reviewsDB.push(newReview)
+  
+          fs.writeFileSync(
+            path.join(__dirname, "reviews.json"),
+            JSON.stringify(reviewsDB)
+          )
+  
+          res.status(201).send(reviewsDB)
+        }
+      } catch (error) {
+        next(error)
       }
-  
-      reviewsDB.push(newReview)
-      
-      fs.writeFileSync(
-        path.join(__dirname, "reviews.json"),
-        JSON.stringify(reviewsDB)
-      )
-  
-      res.send(reviewsDB)
-  
-    } catch (error) {
-      error.httpStatusCode = 404
-      next(error) 
     }
-  })
+  )
+
+// router.post("/", (req, res, next) => {
+//     try {
+//       const reviewsDB = readFile("reviews.json")
+//       const newReview = {
+//         ...req.body,
+//         _id: uniqid(),
+//         createdAt: new Date(),
+//       }
+  
+//       reviewsDB.push(newReview)
+      
+//       fs.writeFileSync(
+//         path.join(__dirname, "reviews.json"),
+//         JSON.stringify(reviewsDB)
+//       )
+  
+//       res.send(reviewsDB)
+  
+//     } catch (error) {
+//       error.httpStatusCode = 404
+//       next(error) 
+//     }
+//   })
 
   
 router.delete("/:id", (req, res) => {

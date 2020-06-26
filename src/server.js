@@ -1,6 +1,6 @@
 const express = require("express")
-const productsRoutes = require("../routes/products")
-const reviewsRoutes = require("../routes/reviews")
+const productsRoutes = require("./routes/products")
+const reviewsRoutes = require("./routes/reviews")
 const listEndpoints = require("express-list-endpoints")
 
 const server = express()

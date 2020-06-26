@@ -12,18 +12,27 @@ const productsPath = path.join(__dirname, "products.json")
 const imagePath = path.join(__dirname, "../../public/img/products")
 const reviewsPath = path.join(__dirname, "../reviews/reviews.json")
 
-const getProducts = () => {
-    const buffer = fs.readFileSync(productsPath)
-    const products = JSON.parse(buffer)
-    return products
+const getProducts = async () => {
+    try {
+        const buffer = await fs.readFile(productsPath)
+        const products = await JSON.parse(buffer)
+        return products
+
+    } catch (error) {
+        console.log(error)
+    }
 }
-const getReviews = () => {
-    const buffer = fs.readFileSync(reviewsPath)
-    const reviews = JSON.parse(buffer)
-    return reviews
+const getReviews = async () => {
+    try {
+        const buffer = await fs.readFile(reviewsPath)
+        const reviews = await JSON.parse(buffer)
+        return reviews
+    } catch (error) {
+        console.log(error)
+    }
 }
-router.get("/", (req, res, next) => {
-    const products = getProducts()
+router.get("/", async (req, res, next) => {
+    const products = await getProducts()
     if (products.length > 0) {
         if (req.query && req.query.category) {
             const filteredProducts = products.filter(product => product.category === req.query.category)
@@ -45,8 +54,8 @@ router.get("/", (req, res, next) => {
         next(err)
     }
 })
-router.get("/:id", (req, res, next) => {
-    const products = getProducts()
+router.get("/:id", async (req, res, next) => {
+    const products = await getProducts()
     if (products.length > 0) {
         const specificProduct = products.filter(product => product.id === req.params.id)
 
@@ -67,8 +76,8 @@ router.get("/:id", (req, res, next) => {
     }
 
 })
-router.get("/:id/reviews", (req, res, next) => {
-    const reviews = getReviews()
+router.get("/:id/reviews", async (req, res, next) => {
+    const reviews = await getReviews()
     if (reviews.length > 0) {
         const filteredReviews = reviews.filter(review => review.elementId === req.params.id)
         if (filteredReviews.length > 0) {
@@ -93,7 +102,7 @@ router.post("/", async (req, res, next) => {
         createdAt: new Date(),
         updatedAt: new Date()
     }
-    const products = getProducts()
+    const products = await getProducts()
     products.push(newProduct)
 
     await fs.writeJSON(productsPath, products)
@@ -103,7 +112,7 @@ router.post("/", async (req, res, next) => {
 router.post("/:id/upload", upload.single("product"), async (req, res, next) => {
 
     await fs.writeFile(path.join(imagePath, `${req.params.id}.png`), req.file.buffer)
-    const products = getProducts()
+    const products = await getProducts()
     const specificProduct = products.filter(product => product.id === req.params.id)
     const productsWithoutSP = products.filter(product => product.id !== req.params.id)
 
@@ -125,7 +134,7 @@ router.post("/:id/upload", upload.single("product"), async (req, res, next) => {
 
 })
 router.put("/:id", async (req, res, next) => {
-    const products = getProducts()
+    const products = await getProducts()
     if (products.length > 0) {
         const specificProduct = products.filter(product => product.id === req.params.id)
         const productsWithoutSP = products.filter(product => product.id !== req.params.id)
@@ -158,7 +167,7 @@ router.put("/:id", async (req, res, next) => {
 
 })
 router.delete("/:id", async (req, res, next) => {
-    const products = getProducts()
+    const products = await getProducts()
     if (products.length > 0) {
         const specificProduct = products.filter(product => product.id === req.params.id)
         const productsWithoutSP = products.filter(product => product.id !== req.params.id)

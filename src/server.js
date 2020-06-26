@@ -17,6 +17,7 @@ const port = process.env.PORT || 3003
 server.use("/products", productsRoutes)
 server.use("/reviews", reviewsRoutes)
 console.log(listEndpoints(server))
+server.use(checkReviewError)
 
 server.use(notFound)
 server.use(generalError)

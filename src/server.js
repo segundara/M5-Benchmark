@@ -1,9 +1,11 @@
 const express = require("express")
-const productsRoutes = require("../routes/products")
-const reviewsRoutes = require("../routes/reviews")
+const productsRoutes = require("./routes/products")
+const reviewsRoutes = require("./routes/reviews")
 const listEndpoints = require("express-list-endpoints")
 
 const server = express()
+
+const port = process.env.PORT || 3002
 
 server.use(express.json())
 
@@ -12,6 +14,6 @@ server.use("/products", productsRoutes)
 server.use("/reviews", reviewsRoutes)
 console.log(listEndpoints(server))
 
-server.listen(3001, () => {
-    console.log("Server is running on PORT:3001")
+server.listen(port, () => {
+    console.log(`Server is running on PORT:${port}`)
 })

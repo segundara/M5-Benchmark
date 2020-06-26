@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "id": "au6a158kbw1zkg9",
+        "name": "app test 1",
+        "description": "somthing longer",
+        "brand": "nokia",
+        "imageUrl": "http://127.0.0.1:3001/img/products/au6a158kbw1zkg9.png",
+        "price": 100,
+        "category": "smartphones",
+        "createdAt": "2020-06-26T10:09:04.328Z",
+        "updatedAt": "2020-06-26T10:09:04.328Z"
+    }
+]

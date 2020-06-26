@@ -5,7 +5,7 @@ const notFoundHandler = (err, req, res, next) => {
     next(err)
   }
   
-  const checkRateError = (err, req, res, next) => {
+  const checkReviewError = (err, req, res, next) => {
     if (err.httpStatusCode === 444) {
       res.status(444).send(err.message)
     }
@@ -38,6 +38,6 @@ const notFoundHandler = (err, req, res, next) => {
     unauthorizedHandler,
     forbiddenHandler,
     catchAllHandler,
-    checkRateError,
+    checkReviewError,
   }
   

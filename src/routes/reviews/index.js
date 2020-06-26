@@ -35,19 +35,19 @@ router.post(
     [
       check("comment")
         .isLength({ min: 4 })
-        .withMessage("No no no no no")
+        .withMessage("Write more text please!")
         .exists()
         .withMessage("Write your comment please!"),
 
-        check("rate")
-            .isInt({ max: 5 })
-            .withMessage("Rate cannot be more than 5 please!")
-            .exists()
-            .withMessage("Give your rating please!"),
-          
+      check("rate")
+         .isInt({ max: 5 })
+         .withMessage("Rate cannot be more than 5 please!")
+         .exists()
+         .withMessage("Give your rating please!"),
+            
       check("elementId")
-      .exists()
-      .withMessage("Insert product ID please!"),
+         .exists()
+         .withMessage("Insert product ID please!"),
     ],
     (req, res, next) => {
       try {

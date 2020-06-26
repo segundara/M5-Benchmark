@@ -2,7 +2,7 @@ const express = require("express")
 const productsRoutes = require("./routes/products")
 const reviewsRoutes = require("./routes/reviews")
 const listEndpoints = require("express-list-endpoints")
-const {checkRateError} = require("./errorHandler")
+const {checkReviewError} = require("./errorHandler")
 
 const server = express()
 
@@ -14,7 +14,7 @@ server.use(express.json())
 server.use("/products", productsRoutes)
 server.use("/reviews", reviewsRoutes)
 console.log(listEndpoints(server))
-server.use(checkRateError)
+server.use(checkReviewError)
 
 server.listen(port, () => {
     console.log(`Server is running on PORT:${port}`)

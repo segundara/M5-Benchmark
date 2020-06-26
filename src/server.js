@@ -2,7 +2,7 @@ const express = require("express")
 const productsRoutes = require("./routes/products")
 const reviewsRoutes = require("./routes/reviews")
 const listEndpoints = require("express-list-endpoints")
-const { notFound, generalError } = require('./errorHandlers')
+const { notFound, generalError, checkReviewError } = require('./errorHandlers')
 const { join } = require("path")
 
 const server = express()

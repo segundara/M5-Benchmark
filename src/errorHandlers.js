@@ -4,6 +4,13 @@ const notFound = (err, req, res, next) => {
     }
     next(err)
 }
+const checkReviewError = (err, req, res, next) => {
+    if (err.httpStatusCode === 444) {
+        res.status(444).send(err.message)
+    }
+    next(err)
+}
+
 const generalError = (err, req, res, next) => {
     if (!res.headersSent) {
         res.status(err.httpStatusCode || 500).send("Some problems in the server!")
@@ -12,5 +19,6 @@ const generalError = (err, req, res, next) => {
 
 module.exports = {
     notFound,
-    generalError
+    generalError,
+    checkReviewError
 }

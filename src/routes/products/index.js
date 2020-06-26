@@ -10,16 +10,34 @@ const port = process.env.PORT || 3003
 
 const productsPath = path.join(__dirname, "products.json")
 const imagePath = path.join(__dirname, "../../public/img/products")
+const reviewsPath = path.join(__dirname, "../reviews/reviews.json")
 
 const getProducts = () => {
     const buffer = fs.readFileSync(productsPath)
     const products = JSON.parse(buffer)
     return products
 }
+const getReviews = () => {
+    const buffer = fs.readFileSync(reviewsPath)
+    const reviews = JSON.parse(buffer)
+    return reviews
+}
 router.get("/", (req, res, next) => {
     const products = getProducts()
     if (products.length > 0) {
-        res.status(200).send(products)
+        if (req.query && req.query.category) {
+            const filteredProducts = products.filter(product => product.category === req.query.category)
+            if (filteredProducts.length > 0) {
+                res.status(200).send(filteredProducts)
+            } else {
+                const err = new Error()
+                err.message = "We dont have products for this category yet!"
+                err.httpStatusCode = 404
+                next(err)
+            }
+        } else {
+            res.status(200).send(products)
+        }
     } else {
         const err = new Error()
         err.message = "We dont have products yet!"
@@ -49,6 +67,25 @@ router.get("/:id", (req, res, next) => {
     }
 
 })
+router.get("/:id/reviews", (req, res, next) => {
+    const reviews = getReviews()
+    if (reviews.length > 0) {
+        const filteredReviews = reviews.filter(review => review.elementId === req.params.id)
+        if (filteredReviews.length > 0) {
+            res.status(200).send(filteredReviews)
+        } else {
+            const err = new Error()
+            err.message = "We dont have any reviews for this product!"
+            err.httpStatusCode = 404
+            next(err)
+        }
+    } else {
+        const err = new Error()
+        err.message = "We dont have any reviews yet!"
+        err.httpStatusCode = 404
+        next(err)
+    }
+})
 router.post("/", async (req, res, next) => {
     const newProduct = {
         id: uniqid(),
@@ -63,7 +100,6 @@ router.post("/", async (req, res, next) => {
 
     res.status(201).send(products)
 })
-
 router.post("/:id/upload", upload.single("product"), async (req, res, next) => {
 
     await fs.writeFile(path.join(imagePath, `${req.params.id}.png`), req.file.buffer)
@@ -88,7 +124,6 @@ router.post("/:id/upload", upload.single("product"), async (req, res, next) => {
     }
 
 })
-
 router.put("/:id", async (req, res, next) => {
     const products = getProducts()
     if (products.length > 0) {

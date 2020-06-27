@@ -80,6 +80,15 @@ class Details extends Component {
         }
     }
 
+    deleteProduct = async () => {
+        const resp = await fetch("http://127.0.0.1:3001/products/" + this.props.match.params.id, {
+            method: "DELETE"
+        })
+        if (resp.ok) {
+            this.props.history.push("/")
+        }
+    }
+
     componentDidMount() {
         this.fetchProduct()
         this.fetchReviews()
@@ -120,7 +129,11 @@ class Details extends Component {
                                         <Button onClick={() => this.setState({ addReview: true })}>Add review</Button>
                                     </div>
                                     <div className="d-flex justify-content-center">
-                                        <Button variant="danger" className="mr-3">Delete</Button>
+                                        <Button
+                                            variant="danger"
+                                            className="mr-3"
+                                            onClick={() => this.deleteProduct()}
+                                        >Delete</Button>
                                         <Button variant="warning">Edit</Button>
                                     </div>
                                     <div className="d-flex justify-content-center mt-4">

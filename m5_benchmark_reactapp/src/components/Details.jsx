@@ -116,8 +116,12 @@ class Details extends Component {
                                         <h5>Price</h5>
                                         <p>{product.price} $</p>
                                     </div>
-                                    <div>
+                                    <div className="mb-3">
                                         <Button onClick={() => this.setState({ addReview: true })}>Add review</Button>
+                                    </div>
+                                    <div className="d-flex justify-content-center">
+                                        <Button variant="danger" className="mr-3">Delete</Button>
+                                        <Button variant="warning">Edit</Button>
                                     </div>
                                     <div className="d-flex justify-content-center mt-4">
                                         {this.state.reviews.length > 0 ?

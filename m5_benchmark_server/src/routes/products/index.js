@@ -168,13 +168,22 @@ router.put("/:id", async (req, res, next) => {
 })
 router.delete("/:id", async (req, res, next) => {
     const products = await getProducts()
+    const reviews = await getReviews()
     if (products.length > 0) {
         const specificProduct = products.filter(product => product.id === req.params.id)
-        const productsWithoutSP = products.filter(product => product.id !== req.params.id)
+        const productReviews = reviews.filter(review => review.elementId === req.params.id)
 
         if (specificProduct.length > 0) {
+            const productsWithoutSP = products.filter(product => product.id !== req.params.id)
             await fs.writeJSON(productsPath, productsWithoutSP)
-            res.status(200).send("The product got deleted from the server!")
+
+            if (productReviews.length > 0) {
+                const reviewsWithoutSP = reviews.filter(review => review.elementId !== req.params.id)
+                await fs.writeJSON(reviewsPath, reviewsWithoutSP)
+                res.status(200).send("The product and reviews got deleted from the server!")
+            } else {
+                res.status(200).send("The product got deleted from the server!")
+            }
         } else {
             const err = new Error()
             err.message = "We dont have any product with that ID!"

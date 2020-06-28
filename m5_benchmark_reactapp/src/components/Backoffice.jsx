@@ -37,7 +37,7 @@ class Backoffice extends React.Component {
         const data = new FormData()
         data.append("product", this.state.photo)
 
-        let response = await fetch("http://127.0.0.1:3001/products", {
+        let response = await fetch("http://127.0.0.1:3002/products", {
             method: "POST",
             body: JSON.stringify(this.state.product),
             headers: {
@@ -46,7 +46,7 @@ class Backoffice extends React.Component {
         })
         let productId = await response.json()
 
-        let addPhoto = await fetch("http://127.0.0.1:3001/products/" + productId[productId.length - 1].id + "/upload", {
+        let addPhoto = await fetch("http://127.0.0.1:3002/products/" + productId[productId.length - 1].id + "/upload", {
             method: "POST",
             body: data
         })

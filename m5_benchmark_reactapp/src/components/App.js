@@ -18,7 +18,7 @@ class App extends Component {
   }
 
   fetchProducts = async () => {
-    const resp = await fetch("http://127.0.0.1:3001/products/")
+    const resp = await fetch("http://127.0.0.1:3002/products/")
 
     if (resp.ok) {
       const products = await resp.json()
@@ -32,7 +32,7 @@ class App extends Component {
     this.setState({
       products: []
     });
-    const resp = await fetch("http://127.0.0.1:3001/products?category=" + category)
+    const resp = await fetch("http://127.0.0.1:3002/products?category=" + category)
 
     if (resp.ok) {
       const products = await resp.json()
@@ -79,7 +79,7 @@ class App extends Component {
                     <label>Brand: {product.brand}</label>
                     <label>Category: {product.category}</label>
                     <Card.Text>{product.description}</Card.Text>
-                    <label>Price: {product.price}</label><br></br>
+                    <label>Price: {product.price} $</label><br></br>
                   </Card.Body>
                 </Card>
               </Col>

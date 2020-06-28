@@ -147,7 +147,6 @@ class Details extends Component {
 
     addProduct = async (e) => {
         e.preventDefault()
-
         const data = new FormData()
         data.append("product", this.state.photo)
 
@@ -164,15 +163,12 @@ class Details extends Component {
             body: data
         })
 
-        if (addPhoto.ok) {
-            setTimeout(() => {
-                this.setState({
-                    editModal: false
-                });
-                this.fetchProduct()
-            }, 500)
+        if (resp.ok) {
+            this.setState({
+                editModal: false
+            });
+            this.fetchProduct()
         }
-
 
     }
 

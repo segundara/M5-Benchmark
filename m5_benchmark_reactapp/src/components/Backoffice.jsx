@@ -16,7 +16,12 @@ class Backoffice extends React.Component {
     }
     handleChange = (event) => {
         const product = this.state.product
-        product[event.currentTarget.id] = event.currentTarget.value
+
+        if (event.currentTarget.id === "price") {
+            product[event.currentTarget.id] = parseInt(event.currentTarget.value)
+        } else {
+            product[event.currentTarget.id] = event.currentTarget.value
+        }
         this.setState({ product })
     }
 

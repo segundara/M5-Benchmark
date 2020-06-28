@@ -20,17 +20,43 @@ class Details extends Component {
     state = {
         product: [],
         addReview: false,
+        editModal: false,
         newReview: {
             elementId: this.props.match.params.id,
             comment: "",
             rate: null
         },
-        reviews: []
+        editProductInfo: {
+            name: "",
+            brand: "",
+            description: "",
+            imageUrl: '',
+            price: null,
+            category: ''
+        },
+        reviews: [],
+        photo: ''
+    }
+
+
+    editInfo = (event) => {
+        const editProductInfo = this.state.editProductInfo
+
+        if (event.currentTarget.id === "price") {
+            editProductInfo[event.currentTarget.id] = parseInt(event.currentTarget.value)
+        } else {
+            editProductInfo[event.currentTarget.id] = event.currentTarget.value
+        }
+        this.setState({ editProductInfo })
     }
 
     handleChange = (e) => {
         const newReview = this.state.newReview
-        newReview[e.currentTarget.id] = e.currentTarget.value
+        if (e.currentTarget.id === "rate") {
+            newReview[e.currentTarget.id] = parseInt(e.currentTarget.value)
+        } else {
+            newReview[e.currentTarget.id] = e.currentTarget.value
+        }
 
         this.setState({
             newReview
@@ -70,12 +96,31 @@ class Details extends Component {
     }
 
     fetchProduct = async () => {
-        const resp = await fetch("http://127.0.0.1:3001/products/" + this.props.match.params.id)
+        const resp = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id)
 
         if (resp.ok) {
             const product = await resp.json()
             this.setState({
                 product
+            });
+        }
+    }
+
+    editProduct = async () => {
+        const resp = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id)
+
+        if (resp.ok) {
+            const product = await resp.json()
+            this.setState({
+                editProductInfo: {
+                    name: product[0].name,
+                    brand: product[0].brand,
+                    description: product[0].description,
+                    imageUrl: product[0].imageUrl,
+                    price: parseInt(product[0].price),
+                    category: product[0].category
+                },
+                editModal: true
             });
         }
     }
@@ -93,6 +138,44 @@ class Details extends Component {
         this.fetchProduct()
         this.fetchReviews()
     }
+
+    saveImg = (e) => {
+        this.setState({
+            photo: e.target.files[0]
+        });
+    }
+
+    addProduct = async (e) => {
+        e.preventDefault()
+
+        const data = new FormData()
+        data.append("product", this.state.photo)
+
+        const resp = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id, {
+            method: "PUT",
+            body: JSON.stringify(this.state.editProductInfo),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        let addPhoto = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id + "/upload", {
+            method: "POST",
+            body: data
+        })
+
+        if (addPhoto.ok) {
+            setTimeout(() => {
+                this.setState({
+                    editModal: false
+                });
+                this.fetchProduct()
+            }, 500)
+        }
+
+
+    }
+
 
 
     render() {
@@ -123,7 +206,7 @@ class Details extends Component {
                                         <h5>Brand</h5>
                                         <p>{product.brand}</p>
                                         <h5>Price</h5>
-                                        <p>{product.price} $</p>
+                                        <p>{product.price}<Badge variant="info">$</Badge></p>
                                     </div>
                                     <div className="mb-3">
                                         <Button onClick={() => this.setState({ addReview: true })}>Add review</Button>
@@ -134,7 +217,10 @@ class Details extends Component {
                                             className="mr-3"
                                             onClick={() => this.deleteProduct()}
                                         >Delete</Button>
-                                        <Button variant="warning">Edit</Button>
+                                        <Button
+                                            variant="warning"
+                                            onClick={() => this.editProduct()}
+                                        >Edit</Button>
                                     </div>
                                     <div className="d-flex justify-content-center mt-4">
                                         {this.state.reviews.length > 0 ?
@@ -204,6 +290,92 @@ class Details extends Component {
                                 </div>
 
                             </Form>
+                        </Modal.Body>
+                    </Modal>
+                    <Modal
+                        show={this.state.editModal}
+                        onHide={() => this.setState({
+                            editModal: false, editProductInfo: {
+                                name: "",
+                                brand: "",
+                                description: "",
+                                imageUrl: '',
+                                price: null,
+                                category: ''
+                            }
+                        })}>
+                        <Modal.Body>
+                            <Form onSubmit={this.addProduct}>
+                                <div className="form-group mt-5">
+                                    <label for="name">Product name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="name"
+                                        placeholder="Input here the Product name"
+                                        onChange={this.editInfo}
+                                        value={this.state.editProductInfo.name}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group ">
+                                    <label for="category">Product Category</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="category"
+                                        placeholder="Input here the category name"
+                                        onChange={this.editInfo}
+                                        value={this.state.editProductInfo.category}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label for="description">Product description</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="description"
+                                        placeholder="Input here the Product description"
+                                        onChange={this.editInfo}
+                                        value={this.state.editProductInfo.description}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label for="price">Product brand</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="brand"
+                                        placeholder="Input here the Product brand"
+                                        onChange={this.editInfo}
+                                        value={this.state.editProductInfo.brand}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label for="price">Product price</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        id="price"
+                                        placeholder="Input here the Product price"
+                                        onChange={this.editInfo}
+                                        value={this.state.editProductInfo.price}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <input type="file" name="file" onChange={this.saveImg} />
+                                </div>
+                                <div className="form-group">
+                                    <Button className="btn btn-primary mt-4" type="submit">
+                                        Add New Info
+                                </Button>
+                                </div>
+                            </Form>
+
                         </Modal.Body>
                     </Modal>
                 </Container>

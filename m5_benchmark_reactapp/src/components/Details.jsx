@@ -230,7 +230,11 @@ class Details extends Component {
                                                     <Accordion.Collapse eventKey="1">
                                                         <>
                                                             {this.state.reviews.map(review =>
-                                                                <Card.Body><Badge variant="info">{review.rate}</Badge> : {review.comment}</Card.Body>
+                                                                <Card.Body>
+                                                                    <Badge variant="info">{review.rate}</Badge> : {review.comment}
+                                                                    <Button className="ml-3" variant="danger">Delete</Button>
+                                                                    <Button className="ml-3" variant="warning">Edit</Button>
+                                                                </Card.Body>
                                                             )}
                                                         </>
                                                     </Accordion.Collapse>

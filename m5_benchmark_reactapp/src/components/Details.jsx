@@ -96,7 +96,7 @@ class Details extends Component {
     }
 
     fetchProduct = async () => {
-        const resp = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id)
+        const resp = await fetch("http://127.0.0.1:3001/products/" + this.props.match.params.id)
 
         if (resp.ok) {
             const product = await resp.json()
@@ -107,7 +107,7 @@ class Details extends Component {
     }
 
     editProduct = async () => {
-        const resp = await fetch("http://127.0.0.1:3002/products/" + this.props.match.params.id)
+        const resp = await fetch("http://127.0.0.1:3001/products/" + this.props.match.params.id)
 
         if (resp.ok) {
             const product = await resp.json()

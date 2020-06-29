@@ -145,6 +145,15 @@ class Details extends Component {
         });
     }
 
+    deleteReview = async (id) => {
+        const resp = await fetch("http://127.0.0.1:3001/reviews/" + id, {
+            method: "DELETE"
+        })
+
+        this.fetchProduct()
+
+    }
+
     addProduct = async (e) => {
         e.preventDefault()
         const data = new FormData()
@@ -232,8 +241,15 @@ class Details extends Component {
                                                             {this.state.reviews.map(review =>
                                                                 <Card.Body>
                                                                     <Badge variant="info">{review.rate}</Badge> : {review.comment}
-                                                                    <Button className="ml-3" variant="danger">Delete</Button>
-                                                                    <Button className="ml-3" variant="warning">Edit</Button>
+                                                                    <Button
+                                                                        className="ml-3"
+                                                                        variant="danger"
+                                                                        onClick={() => this.deleteReview(review._id)}
+                                                                    >Delete</Button>
+                                                                    <Button
+                                                                        className="ml-3"
+                                                                        variant="warning"
+                                                                    >Edit</Button>
                                                                 </Card.Body>
                                                             )}
                                                         </>
